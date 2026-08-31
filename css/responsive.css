@@ -1,0 +1,11 @@
+/* Responsive breakpoints: Mobile <600, Tablet <1024, Desktop */
+@media (max-width:599px){
+  .row{flex-direction:column}
+  .site-header{border-left:6px solid var(--accent)}
+}
+@media (min-width:600px) and (max-width:1023px){
+  .container{padding:20px}
+}
+@media (min-width:1024px){
+  .container{padding:28px}
+}

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Rutas Seguras Kids</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body>
+    <header class="site-header">
+        <h1>Rutas Seguras Kids</h1>
+        <p class="lead">Gestión de rutas escolares — Vanilla JS, Web Components</p>
+    </header>
+
+    <main class="container">
+        <section class="form-section">
+            <h2>Crear nueva ruta</h2>
+            <form id="form-ruta">
+                <div class="row">
+                    <label>Nombre de la ruta <input type="text" name="nombre" required></label>
+                    <label>Conductor <input type="text" name="conductor" required></label>
+                </div>
+                <div class="row">
+                    <label>Hora de salida <input type="time" name="hora" required></label>
+                    <label>Ciudad (para clima) <input type="text" name="ciudad" required></label>
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn">Agregar ruta</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="list-section">
+            <h2>Rutas</h2>
+            <div id="lista-rutas" class="routes-list" aria-live="polite"></div>
+        </section>
+    </main>
+
+    <!-- La plantilla del componente se define en el archivo del componente (componente aislado). -->
+
+    <script type="module" src="js/components/RouteCard.js"></script>
+    <script type="module" src="js/api.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+
+</html>
