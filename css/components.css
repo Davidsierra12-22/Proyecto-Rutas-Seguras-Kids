@@ -1,8 +1,0 @@
-/* Styles for forms and small UI pieces */
-.add-student{display:flex;gap:8px;margin-top:8px}
-.students-list{margin-top:8px}
-.student .remove{background:#ff6b6b;border:none;color:#fff;border-radius:6px;padding:4px 8px}
-.card-title{font-weight:700;font-size:1.05rem}
-.card-driver,.card-time{opacity:0.85}
-.edit-btn{background:#f0ad4e;border:none;padding:6px 8px;border-radius:6px}
-.delete-btn{background:#e74c3c;border:none;padding:6px 8px;border-radius:6px;color:#fff}
