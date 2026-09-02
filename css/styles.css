@@ -29,32 +29,66 @@
   }
   
   /* ==========================================
-     2. ESTRUCTURA Y LAYOUT (SIDEBAR + MAIN)
+     2. ESTRUCTURA Y LAYOUT MODIFICADO
      ========================================== */
   .diseno-aplicacion {
     display: flex;
+    flex-direction: column;
     min-height: 100vh;
   }
   
-  /* BARRA LATERAL */
+  .encabezado-superior {
+    height: 60px;
+    background-color: #1e3a60;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    width: 100%;
+  }
+  
+  .encabezado-logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo-principal {
+    max-height: 40px;
+    width: auto;
+  }
+  
+  .perfil-usuario {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #ffffff;
+  }
+  
+  .rol-usuario {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ffffff;
+  }
+  
+  .avatar-usuario {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+  }
+  
+  .cuerpo-aplicacion {
+    display: flex;
+    flex: 1;
+  }
+  
   .barra-lateral {
-    width: 250px;
+    width: 240px;
     background-color: var(--color-primario);
     color: #ffffff;
     display: flex;
     flex-direction: column;
     padding: 1.5rem 1rem;
     flex-shrink: 0;
-  }
-  
-  .encabezado-lateral {
-    margin-bottom: 2rem;
-    text-align: center;
-  }
-  
-  .logo-principal {
-    max-width: 100%;
-    height: auto;
   }
   
   .navegacion-lateral ul {
@@ -101,44 +135,10 @@
     text-transform: uppercase;
   }
   
-  /* CONTENIDO PRINCIPAL */
-  .envoltorio-principal {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .encabezado-superior {
-    height: 60px;
-    background-color: var(--color-fondo-tarjeta);
-    border-bottom: 1px solid var(--color-borde);
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 0 2rem;
-  }
-  
-  .perfil-usuario {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-  
-  .rol-usuario {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--color-texto-suave);
-  }
-  
-  .avatar-usuario {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-  }
-  
   .area-contenido {
     padding: 2rem;
     flex: 1;
+    background-color: var(--color-fondo-app);
   }
   
   /* GESTIÓN DE VISTAS (SPA) */
@@ -237,6 +237,14 @@
     border-radius: 6px;
     font-size: 0.9rem;
   }
+
+  .ciudad-ruta,
+  .placa-clima {
+    display: inline-block;
+    font-size: 0.9rem;
+    color: var(--color-primario-oscuro);
+    font-weight: 700;
+  }
   
   .boton-principal {
     width: 100%;
@@ -252,6 +260,44 @@
   
   .boton-principal:hover {
     background-color: var(--color-primario-oscuro);
+  }
+
+  .toast-notificacion {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #114b5f;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+    animation: deslizarEntrada 0.3s ease-out forwards;
+    border-left: 5px solid #167086;
+    font-family: inherit;
+    font-size: 14px;
+  }
+
+  .toast-notificacion.error {
+    border-left-color: #e63946;
+  }
+
+  .toast-notificacion.exito {
+    border-left-color: #2a9d8f;
+  }
+
+  @keyframes deslizarEntrada {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
   }
   
   /* CONTENEDORES Y LISTAS */

@@ -1,92 +1,91 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rutas Seguras Kids - Panel Principal</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
 
   <div class="diseno-aplicacion">
 
-    <!-- BARRA LATERAL -->
-    <aside class="barra-lateral">
-      
-      <div class="encabezado-lateral">
+    <!-- 1. HEADER SUPERIOR CONTINUO -->
+    <header class="encabezado-superior">
+      <div class="encabezado-logo">
         <a href="#" class="enlace-logo" id="logo-inicio">
-          <!-- Espacio para el logo -->
           <img src="assets/icos/logo-dashboard.png" alt="Logo Rutas Seguras Kids" class="logo-principal">
         </a>
       </div>
+      <div class="perfil-usuario">
+        <span class="rol-usuario">Admin</span>
+        <img src="assets/icos/perfil.png" alt="Avatar Usuario" class="avatar-usuario">
+      </div>
+    </header>
 
-      <nav class="navegacion-lateral">
-        <ul>
-          <li>
-            <button class="boton-nav activo" data-vista="vista-panel">
-              <span class="icono-nav">
-                <img src="https://via.placeholder.com/20?text=📊" alt="Icono Panel">
-              </span>
-              <span class="texto-nav">Dashboard</span>
-              <span class="etiqueta-activo">Activa</span>
-            </button>
-          </li>
-          <li>
-            <button class="boton-nav" data-vista="vista-rutas">
-              <span class="icono-nav">
-                <img src="https://via.placeholder.com/20?text=📍" alt="Icono Rutas">
-              </span>
-              <span class="texto-nav">Rutas</span>
-            </button>
-          </li>
-          <li>
-            <button class="boton-nav" data-vista="vista-estudiantes">
-              <span class="icono-nav">
-                <img src="https://via.placeholder.com/20?text=👥" alt="Icono Estudiantes">
-              </span>
-              <span class="texto-nav">Estudiantes</span>
-            </button>
-          </li>
-          <li>
-            <button class="boton-nav" data-vista="vista-conductores">
-              <span class="icono-nav">
-                <img src="https://via.placeholder.com/20?text=👤" alt="Icono Conductores">
-              </span>
-              <span class="texto-nav">Conductores</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
+    <!-- 2. CONTENEDOR PRINCIPAL -->
+    <div class="cuerpo-aplicacion">
 
-    </aside>
-
-    <!-- CONTENIDO PRINCIPAL -->
-    <div class="envoltorio-principal">
-
-      <!-- ENCABEZADO SUPERIOR -->
-      <header class="encabezado-superior">
-        <div class="perfil-usuario">
-          <span class="rol-usuario">Admin</span>
-          <img src="https://via.placeholder.com/35?text=👤" alt="Avatar Usuario" class="avatar-usuario">
-        </div>
-      </header>
+      <!-- BARRA LATERAL -->
+      <aside class="barra-lateral">
+        <nav class="navegacion-lateral">
+          <ul>
+            <li>
+              <button class="boton-nav activo" data-vista="vista-panel">
+                <span class="icono-nav">
+                  <img src="assets/icos/dashboard.png" alt="Icono Panel">
+                </span>
+                <span class="texto-nav">Dashboard</span>
+                <span class="etiqueta-activo">Activa</span>
+              </button>
+            </li>
+            <li>
+              <button class="boton-nav" data-vista="vista-rutas">
+                <span class="icono-nav">
+                  <img src="assets/icos/rutas.png" alt="Icono Rutas">
+                </span>
+                <span class="texto-nav">Rutas</span>
+              </button>
+            </li>
+            <li>
+              <button class="boton-nav" data-vista="vista-estudiantes">
+                <span class="icono-nav">
+                  <img src="assets/icos/estudiantes.png" alt="Icono Estudiantes">
+                </span>
+                <span class="texto-nav">Estudiantes</span>
+              </button>
+            </li>
+            <li>
+              <button class="boton-nav" data-vista="vista-conductores">
+                <span class="icono-nav">
+                  <img src="assets/icos/conductores.png" alt="Icono Conductores">
+                </span>
+                <span class="texto-nav">Conductores</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </aside>
 
       <!-- ÁREA DE VISTAS -->
       <main class="area-contenido">
 
         <!-- VISTA 1: DASHBOARD / PANEL -->
         <section id="vista-panel" class="seccion-vista activa">
-          
+
           <div class="encabezado-panel">
             <h2>Gestión de Rutas Escolares</h2>
-            
-            <!-- TARJETA CLIMA (API OpenWeather) -->
+
+            <!-- TARJETA CLIMA GLOBAL (SEDE) -->
             <div id="tarjeta-clima" class="tarjeta-clima-box">
               <div class="contenedor-icono-clima">
-                <img id="icono-clima" src="https://via.placeholder.com/40?text=☀️" alt="Clima">
+                <img id="icono-clima" src="assets/icos/clima.png" alt="Clima">
               </div>
               <div class="detalles-clima">
-                <p class="info-temperatura">Clima en <span id="ciudad-clima">Cargando...</span>: <span id="temp-clima">--°C</span>, <span id="desc-clima">--</span></p>
+                <p class="info-temperatura">Clima en <span id="ciudad-clima">Cargando...</span>: <span
+                    id="temp-clima">--°C</span>, <span id="desc-clima">--</span></p>
                 <p class="subtexto-clima">Excelente día para las rutas</p>
                 <div class="meta-clima">
                   <span id="fecha-clima">📅 --/--/----</span>
@@ -109,6 +108,13 @@
                 </div>
 
                 <div class="grupo-formulario">
+                  <label for="ciudadRuta">Ciudad de la ruta</label>
+                  <input type="text" id="ciudadRuta" name="ciudadRuta" list="lista-ciudades-colombia"
+                    placeholder="Escribe o selecciona una ciudad" required autocomplete="off">
+                  <datalist id="lista-ciudades-colombia"></datalist>
+                </div>
+
+                <div class="grupo-formulario">
                   <label for="selectConductor">Conductor</label>
                   <select id="selectConductor" name="selectConductor" required>
                     <option value="">Seleccione Conductor</option>
@@ -124,7 +130,8 @@
 
                 <div class="grupo-formulario">
                   <label for="capacidadRuta">Capacidad</label>
-                  <input type="number" id="capacidadRuta" name="capacidadRuta" placeholder="30" min="1" max="60" required>
+                  <input type="number" id="capacidadRuta" name="capacidadRuta" placeholder="30" min="1" max="60"
+                    required>
                 </div>
 
                 <button type="submit" class="boton-principal">Añadir Ruta</button>
@@ -135,7 +142,7 @@
             <div class="tarjeta-panel tarjeta-lista-rutas">
               <h3>Rutas Registradas</h3>
               <div id="contenedor-rutas" class="flex-rutas">
-                <!-- Los Web Components <route-card> se insertan aquí -->
+                <!-- Se insertan los Web Components <route-card> -->
               </div>
             </div>
 
@@ -161,7 +168,8 @@
                 </select>
               </div>
 
-              <button type="button" id="boton-confirmar-asignacion" class="boton-principal">Confirmar Asignación</button>
+              <button type="button" id="boton-confirmar-asignacion" class="boton-principal">Confirmar
+                Asignación</button>
             </div>
 
           </div>
@@ -170,7 +178,7 @@
         <!-- VISTA 2: RUTAS -->
         <section id="vista-rutas" class="seccion-vista oculta">
           <h2>Gestión Completa de Rutas</h2>
-          <div id="contenedor-rutas-completo" class="flex-rutas"></div>
+          <div id="contenedor-rutas-gestion"></div>
         </section>
 
         <!-- VISTA 3: ESTUDIANTES -->
@@ -228,18 +236,29 @@
     <div class="tarjeta-componente">
       <div class="encabezado-tarjeta-comp">
         <span class="icono-bus">🚌</span>
-        <h4 class="titulo-tarjeta-comp"><slot name="titulo-ruta">Ruta 01 - Norte</slot></h4>
+        <h4 class="titulo-tarjeta-comp">
+          <slot name="titulo-ruta">Ruta 01 - Norte</slot>
+        </h4>
         <div class="acciones-encabezado">
           <button class="boton-icono boton-editar" id="btn-editar" title="Editar">✏️</button>
           <button class="boton-icono boton-eliminar" id="btn-eliminar" title="Eliminar">🗑️</button>
         </div>
       </div>
-      
+
       <div class="cuerpo-tarjeta-comp">
-        <p class="info-linea"><strong>Conductor:</strong> <slot name="nombre-conductor">Juan P.</slot></p>
-        <p class="info-linea"><strong>Hora:</strong> <slot name="hora-salida">07:00 AM</slot></p>
+        <p class="info-linea"><strong>Conductor:</strong>
+          <slot name="nombre-conductor">Juan P.</slot>
+        </p>
+        <p class="info-linea"><strong>Hora:</strong>
+          <slot name="hora-salida">07:00 AM</slot>
+        </p>
+        <p class="info-linea"><strong>Ciudad:</strong> <span class="ciudad-ruta" id="ciudad-ruta-tarjeta">
+            <slot name="ciudad-ruta">Bucaramanga</slot>
+          </span></p>
         <p class="info-linea"><strong>Clima:</strong> <span class="placa-clima" id="clima-tarjeta">☀️ 18°C</span></p>
-        <p class="info-capacidad"><strong>Estudiantes:</strong> <span id="contador-estudiantes">0</span> / <slot name="capacidad">30</slot></p>
+        <p class="info-capacidad"><strong>Estudiantes:</strong> <span id="contador-estudiantes">0</span> / <slot
+            name="capacidad">30</slot>
+        </p>
       </div>
 
       <div class="seccion-estudiantes-comp">
@@ -249,5 +268,9 @@
     </div>
   </template>
 
+  <script src="js/services/weather.js"></script>
+  <script src="js/componets/route-card.js"></script>
+  <script src="js/app.js"></script>
 </body>
+
 </html>
