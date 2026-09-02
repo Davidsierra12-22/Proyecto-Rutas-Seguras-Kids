@@ -124,7 +124,7 @@ Fin
 
 Whimsical - Diagrama de flujo de registro / validación:
 
-[Insertar enlace de Whimsical aquí]
+https://whimsical.com/el-chanclas/rutas-kids-5nRf5kdWWKhTKKfuhb7uev
 
 ### B. Flujo de asignación de estudiantes y persistencia
 
