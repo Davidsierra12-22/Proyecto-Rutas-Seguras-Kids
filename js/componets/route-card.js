@@ -1,7 +1,16 @@
+/*
+ * WEB COMPONENT: <route-card>
+ *
+ * Esta clase crea una etiqueta HTML propia para representar una ruta. Al usar
+ * Shadow DOM, los estilos y los ids internos de cada tarjeta no chocan con los
+ * de las demás tarjetas ni con los del index.html.
+ */
 class RouteCard extends HTMLElement {
   constructor() {
     super();
+    // mode: 'open' permite consultar el contenido interno mediante shadowRoot.
     this.attachShadow({ mode: 'open' });
+    // Datos de respaldo que permiten dibujar una tarjeta incluso antes de recibir una ruta.
     this._data = {
       id: '',
       nombre: 'Ruta sin nombre',
@@ -13,21 +22,27 @@ class RouteCard extends HTMLElement {
     };
   }
 
+  // El navegador ejecuta este método automáticamente al insertar <route-card> en el DOM.
   connectedCallback() {
     this.render();
   }
 
+  /* Método público llamado desde app.js. La desestructuración extrae solo los
+   * campos necesarios del objeto ruta; estudiantes = [] evita recibir undefined. */
   setInfo({ id, nombre, conductor, hora, capacidad, ciudad, estudiantes = [] }) {
     this._data = { id, nombre, conductor, hora, capacidad, ciudad, estudiantes };
     if (id) this.dataset.id = id;
     this.render();
   }
 
+  /* Consulta el clima de la ciudad de esta tarjeta. async/await espera el
+   * resultado de weather.js sin bloquear el resto de la interfaz. */
   async actualizarClima(ciudad) {
     const climaEl = this.shadowRoot?.querySelector('#clima-tarjeta');
     if (!climaEl) return;
 
     try {
+      // La función vive en weather.js y se publica en window para poder reutilizarla aquí.
       if (window.fetchCityWeather) {
         const clima = await window.fetchCityWeather(ciudad || 'Bucaramanga');
         climaEl.textContent = `${clima.icono} ${clima.temperatura}°C`;
@@ -39,11 +54,13 @@ class RouteCard extends HTMLElement {
     }
   }
 
+  /* Genera nuevamente todo el contenido visible de la tarjeta según this._data.
+   * Cada render también vuelve a enlazar los eventos porque reemplaza innerHTML. */
   render() {
     const { id, nombre, conductor, hora, capacidad, ciudad, estudiantes } = this._data;
     const totalEstudiantes = estudiantes.length;
 
-    // Primeros 3 estudiantes para la vista previa de avatares
+    // slice toma una copia con los primeros tres estudiantes para la vista previa.
     const vistaPrevia = estudiantes.slice(0, 3);
     const hayMas = totalEstudiantes > 3;
 
@@ -215,6 +232,7 @@ class RouteCard extends HTMLElement {
 
           <div class="fila-acciones-avatares">
             <div class="grupo-avatares">
+              <!-- map crea un avatar por estudiante y join('') une ese HTML. -->
               ${vistaPrevia.map(e => `
                 <img src="${typeof e === 'object' && e.foto ? e.foto : 'assets/icos/perfil.png'}" class="avatar-preview" alt="Estudiante">
               `).join('')}
@@ -233,6 +251,7 @@ class RouteCard extends HTMLElement {
           </button>
 
           <div class="lista-desplegable" id="lista-estudiantes">
+            <!-- Ternario: muestra estado vacío o crea los elementos de la lista. -->
             ${totalEstudiantes === 0 
               ? `<div class="sin-estudiantes">Sin estudiantes asignados</div>`
               : estudiantes.map(e => {
@@ -255,6 +274,8 @@ class RouteCard extends HTMLElement {
     this.actualizarClima(ciudad);
   }
 
+  /* Obtiene los elementos recién creados dentro del Shadow DOM y conecta sus
+   * acciones. Se llama después de render para que esos elementos ya existan. */
   autobindEvents(id) {
     const btnToggle = this.shadowRoot.querySelector('#btn-toggle');
     const lista = this.shadowRoot.querySelector('#lista-estudiantes');
@@ -264,6 +285,7 @@ class RouteCard extends HTMLElement {
 
     if (btnToggle && lista) {
       btnToggle.addEventListener('click', () => {
+        // La clase abierta cambia display en el CSS interno y la flecha refleja el estado.
         const estaAbierta = lista.classList.toggle('abierta');
         flecha.textContent = estaAbierta ? '▴' : '▾';
       });
@@ -271,6 +293,8 @@ class RouteCard extends HTMLElement {
 
     if (btnEditar) {
       btnEditar.addEventListener('click', () => {
+        /* CustomEvent avisa a app.js. bubbles y composed permiten que el evento
+         * salga del Shadow DOM y sea escuchado por document. */
         this.dispatchEvent(new CustomEvent('editar-ruta', {
           detail: { id: id || this._data.id },
           bubbles: true,
@@ -291,5 +315,7 @@ class RouteCard extends HTMLElement {
   }
 }
 
+// Registra la clase para que el navegador entienda la etiqueta <route-card>.
 customElements.define('route-card', RouteCard);
+// Se expone para depuración o reutilización desde otros scripts cargados en la página.
 window.RouteCard = RouteCard;

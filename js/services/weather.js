@@ -1,8 +1,11 @@
+/* SERVICIO DE CLIMA
+ * Este archivo concentra la consulta externa y publica funciones reutilizables
+ * en window para que app.js y route-card.js no tengan que repetirla. */
 const WEATHER_API_BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
 const OPENWEATHER_API_KEY = 'd57d5462ba86429e2cac9628d82e0c10';
 const CIUDAD_SEDE_FIJA = 'Bucaramanga';
 
-// Lista local para autocompletar (Bucaramanga, Santander y principales de Colombia)
+// Lista local que llena el datalist del formulario; no requiere consultar internet.
 const CIUDADES_COLOMBIA = [
   'Bucaramanga',
   'Floridablanca',
@@ -22,7 +25,7 @@ const CIUDADES_COLOMBIA = [
 ];
 
 /**
- * Convierte el código de icono de OpenWeather a emoji
+ * Convierte el código técnico devuelto por OpenWeather a un emoji visible.
  */
 function getWeatherIcon(ico) {
   const iconMap = {
@@ -36,13 +39,16 @@ function getWeatherIcon(ico) {
     '13d': '❄️', '13n': '❄️',
     '50d': '🌫️', '50n': '🌫️'
   };
+  // Si llega un código desconocido, se utiliza un icono neutral como respaldo.
   return iconMap[ico] || '🌤️';
 }
 
 /**
- * Consulta la API de OpenWeather para una ciudad específica
+ * Consulta OpenWeather y devuelve siempre un objeto con el mismo formato,
+ * incluso si la consulta falla. Así la interfaz no necesita casos especiales.
  */
 async function fetchCityWeather(cityName) {
+  // Se protege contra valores vacíos, null o espacios adicionales.
   const ciudad = (cityName || '').trim();
 
   if (!ciudad) {
@@ -56,6 +62,8 @@ async function fetchCityWeather(cityName) {
   }
 
   try {
+    /* encodeURIComponent hace segura la ciudad para una URL. units=metric pide
+     * grados Celsius y lang=es solicita la descripción en español. */
     const url = `${WEATHER_API_BASE_URL}?q=${encodeURIComponent(ciudad + ',co')}&units=metric&lang=es&appid=${OPENWEATHER_API_KEY}`;
     const respuesta = await fetch(url);
 
@@ -63,10 +71,12 @@ async function fetchCityWeather(cityName) {
       throw new Error('Ciudad no encontrada o error de API');
     }
 
+    // La respuesta HTTP se transforma de JSON a un objeto JavaScript.
     const data = await respuesta.json();
 
     return {
       ciudad: data.name || ciudad,
+      // ?. y ?? permiten leer datos opcionales sin provocar errores.
       temperatura: Math.round(data.main?.temp ?? 0),
       descripcion: data.weather?.[0]?.description || 'Sin información',
       icono: getWeatherIcon(data.weather?.[0]?.icon || '01d'),
@@ -85,7 +95,8 @@ async function fetchCityWeather(cityName) {
 }
 
 /**
- * Llena el elemento <datalist> con las ciudades predefinidas
+ * Llena el <datalist> asociado al input de ciudad. El navegador muestra estas
+ * opciones como sugerencias mientras el usuario escribe.
  */
 function inicializarAutocompletarCiudades(datalistId = 'lista-ciudades-colombia') {
   const datalist = document.getElementById(datalistId);
@@ -100,7 +111,7 @@ function inicializarAutocompletarCiudades(datalistId = 'lista-ciudades-colombia'
 }
 
 /**
- * Actualiza la tarjeta de clima de la sede principal
+ * Escribe los datos recibidos en los elementos del dashboard identificados por id.
  */
 function updateMainWeatherPanel(weatherData) {
   const ciudadEl = document.getElementById('ciudad-clima');
@@ -118,20 +129,22 @@ function updateMainWeatherPanel(weatherData) {
   iconEl.src = 'assets/icos/clima.png';
   iconEl.alt = 'Clima: ' + weatherData.descripcion;
 
+  // Fecha y hora se toman del dispositivo del usuario y se formatean para Colombia.
   const ahora = new Date();
   fechaEl.textContent = `📅 ${ahora.toLocaleDateString('es-CO')}`;
   horaEl.textContent = `⏰ ${ahora.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })}`;
 }
 
 /**
- * Carga el clima inicial de la ciudad sede
+ * Carga el clima inicial de la ciudad sede y después pinta el panel principal.
  */
 async function initMainWeather() {
   const climaActual = await fetchCityWeather(CIUDAD_SEDE_FIJA);
   updateMainWeatherPanel(climaActual);
 }
 
-// Inicialización de funciones expuestas
+/* Funciones expuestas para que scripts cargados después puedan usarlas. El orden
+ * de los <script> en index.html garantiza que estén disponibles antes de app.js. */
 window.fetchCityWeather = fetchCityWeather;
 window.initMainWeather = initMainWeather;
 window.updateMainWeatherPanel = updateMainWeatherPanel;

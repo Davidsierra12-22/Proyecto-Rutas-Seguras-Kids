@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rutas Seguras Kids - Panel Principal</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=menu-responsive-1">
 </head>
 
 <body>
@@ -14,6 +14,11 @@
 
     <!-- 1. HEADER SUPERIOR CONTINUO -->
     <header class="encabezado-superior">
+      <!-- app.js escucha este botón y alterna la clase "abierta" en la barra lateral. -->
+      <button type="button" id="boton-menu-lateral" class="boton-menu-lateral" aria-label="Abrir menú de navegación"
+        aria-controls="barra-lateral" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
       <div class="encabezado-logo">
         <a href="#" class="enlace-logo" id="logo-inicio">
           <img src="assets/icos/logo-dashboard.png" alt="Logo Rutas Seguras Kids" class="logo-principal">
@@ -29,10 +34,12 @@
     <div class="cuerpo-aplicacion">
 
       <!-- BARRA LATERAL -->
-      <aside class="barra-lateral">
+      <!-- El id permite a app.js abrir/cerrar este menú en pantallas pequeñas. -->
+      <aside id="barra-lateral" class="barra-lateral">
         <nav class="navegacion-lateral">
           <ul>
             <li>
+              <!-- data-vista contiene el id de la sección que app.js debe mostrar. -->
               <button class="boton-nav activo" data-vista="vista-panel">
                 <span class="icono-nav">
                   <img src="assets/icos/dashboard.png" alt="Icono Panel">
@@ -78,7 +85,7 @@
           <div class="encabezado-panel">
             <h2>Gestión de Rutas Escolares</h2>
 
-            <!-- TARJETA CLIMA GLOBAL (SEDE) -->
+            <!-- weather.js reemplaza el contenido de estos ids cuando recibe el clima. -->
             <div id="tarjeta-clima" class="tarjeta-clima-box">
               <div class="contenedor-icono-clima">
                 <img id="icono-clima" src="assets/icos/clima.png" alt="Clima">
@@ -101,6 +108,7 @@
             <!-- Columna 1: Formulario Nueva Ruta -->
             <div class="tarjeta-panel tarjeta-formulario">
               <h3>Añadir Nueva Ruta</h3>
+              <!-- app.js intercepta submit, valida los campos y crea el objeto ruta. -->
               <form id="formulario-ruta" novalidate>
                 <div class="grupo-formulario">
                   <label for="nombreRuta">Nombre de Ruta</label>
@@ -111,11 +119,13 @@
                   <label for="ciudadRuta">Ciudad de la ruta</label>
                   <input type="text" id="ciudadRuta" name="ciudadRuta" list="lista-ciudades-colombia"
                     placeholder="Escribe o selecciona una ciudad" required autocomplete="off">
+                  <!-- weather.js agrega aquí las opciones de ciudades al iniciar la página. -->
                   <datalist id="lista-ciudades-colombia"></datalist>
                 </div>
 
                 <div class="grupo-formulario">
                   <label for="selectConductor">Conductor</label>
+                  <!-- app.js llena y bloquea conductores que ya pertenecen a una ruta. -->
                   <select id="selectConductor" name="selectConductor" required>
                     <option value="">Seleccione Conductor</option>
                     <option value="Juan Pérez">Juan Pérez</option>
@@ -141,8 +151,8 @@
             <!-- Columna 2: Lista de Web Components <route-card> -->
             <div class="tarjeta-panel tarjeta-lista-rutas">
               <h3>Rutas Registradas</h3>
+              <!-- app.js inserta un <route-card> por cada ruta guardada. -->
               <div id="contenedor-rutas" class="flex-rutas">
-                <!-- Se insertan los Web Components <route-card> -->
               </div>
             </div>
 
@@ -150,9 +160,11 @@
             <div class="tarjeta-panel tarjeta-asignacion">
               <h3>Asignar Estudiantes</h3>
               <div class="caja-busqueda">
+                <!-- El evento input de este campo vuelve a dibujar la lista filtrada. -->
                 <input type="text" id="buscarEstudiante" placeholder="🔍 Buscar estudiante...">
               </div>
 
+              <!-- app.js reemplaza esta lista y deshabilita quienes ya tienen ruta. -->
               <div class="lista-estudiantes-check" id="lista-estudiantes-disponibles">
                 <label><input type="checkbox" value="Diego"> Diego</label>
                 <label><input type="checkbox" value="Valeria"> Valeria</label>
@@ -163,11 +175,13 @@
 
               <div class="grupo-formulario" style="margin-top: 1rem;">
                 <label for="selectRutaAsignar">Asignar a Ruta</label>
+                <!-- Su valor es el id de la ruta seleccionada, no su nombre visible. -->
                 <select id="selectRutaAsignar">
                   <option value="">Seleccione Ruta</option>
                 </select>
               </div>
 
+              <!-- app.js lee las casillas marcadas y las asigna a la ruta elegida. -->
               <button type="button" id="boton-confirmar-asignacion" class="boton-principal">Confirmar
                 Asignación</button>
             </div>
@@ -178,6 +192,7 @@
         <!-- VISTA 2: RUTAS -->
         <section id="vista-rutas" class="seccion-vista oculta">
           <h2>Gestión Completa de Rutas</h2>
+          <!-- Contenedor dinámico: app.js crea aquí las tarjetas de gestión. -->
           <div id="contenedor-rutas-gestion"></div>
         </section>
 
@@ -187,6 +202,7 @@
           <div class="caja-contenido-vista">
             <div class="tarjeta-registro-inline">
               <label for="nombreEstudianteInput">Añadir Nuevo Estudiante</label>
+              <!-- Al enviarlo, app.js añade el estudiante al estado y actualiza la tabla. -->
               <form id="formulario-estudiante" class="grupo-input">
                 <input type="text" id="nombreEstudianteInput" placeholder="Ej: Diego Martínez" required>
                 <button type="submit" class="boton-principal">+ Guardar</button>
@@ -201,6 +217,7 @@
                     <th>Acciones</th>
                   </tr>
                 </thead>
+                <!-- app.js genera las filas, badges y botones de eliminación aquí. -->
                 <tbody id="cuerpo-tabla-estudiantes"></tbody>
               </table>
             </div>
@@ -213,6 +230,7 @@
           <div class="caja-contenido-vista">
             <div class="tarjeta-registro-inline">
               <label for="nombreConductorInput">Añadir Nuevo Conductor</label>
+              <!-- Al enviarlo, app.js añade el conductor y actualiza el selector de rutas. -->
               <form id="formulario-conductor" class="grupo-input">
                 <input type="text" id="nombreConductorInput" placeholder="Ej: Ana Rodríguez" required>
                 <button type="submit" class="boton-principal">+ Guardar</button>
@@ -227,6 +245,7 @@
                     <th>Acciones</th>
                   </tr>
                 </thead>
+                <!-- app.js genera las filas y botones de eliminación aquí. -->
                 <tbody id="cuerpo-tabla-conductores"></tbody>
               </table>
             </div>
@@ -237,7 +256,7 @@
     </div>
   </div>
 
-  <!-- TEMPLATE PARA EL WEB COMPONENT <route-card> -->
+  <!-- Plantilla visual de respaldo. Las tarjetas activas se construyen desde route-card.js. -->
   <template id="plantilla-tarjeta-ruta">
     <div class="tarjeta-componente">
       <div class="encabezado-tarjeta-comp">
@@ -274,9 +293,12 @@
     </div>
   </template>
 
+  <!-- El orden es importante: app.js utiliza las funciones de los dos scripts anteriores. -->
   <script src="js/services/weather.js"></script>
+  <!-- Define la etiqueta personalizada <route-card> usada por app.js. -->
   <script src="js/componets/route-card.js"></script>
-  <script src="js/app.js"></script>
+  <!-- Coordina eventos, datos guardados, formularios y renderizado de la aplicación. -->
+  <script src="js/app.js?v=menu-responsive-1"></script>
 </body>
 
 </html>

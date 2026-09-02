@@ -46,6 +46,25 @@
     padding: 0 1.5rem;
     width: 100%;
   }
+
+  .boton-menu-lateral {
+    display: none;
+    width: 38px;
+    height: 38px;
+    padding: 8px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .boton-menu-lateral span {
+    display: block;
+    height: 2px;
+    margin: 4px 0;
+    border-radius: 2px;
+    background: #ffffff;
+  }
   
   .encabezado-logo {
     display: flex;
@@ -393,6 +412,10 @@
     text-align: left;
     font-size: 0.9rem;
   }
+
+  .contenedor-tabla {
+    overflow-x: auto;
+  }
   
   /* ==========================================
      4. RESPONSIVIDAD (3 BREAKPOINTS @media)
@@ -408,22 +431,15 @@
     }
   }
   
-  /* Breakpoint 2: Tablets (máx 768px) */
-  @media (max-width: 768px) {
-    .diseno-aplicacion {
-      flex-direction: column;
-    }
+  /* Breakpoint 2: Tablets: la navegación continúa vertical */
+  @media (max-width: 900px) {
     .barra-lateral {
-      width: 100%;
-      padding: 1rem;
+      width: 190px;
+      padding: 1rem 0.75rem;
     }
-    .navegacion-lateral ul {
-      display: flex;
-      gap: 0.5rem;
-      overflow-x: auto;
-    }
-    .boton-nav {
-      white-space: nowrap;
+    .area-contenido {
+      min-width: 0;
+      padding: 1.5rem;
     }
     .cuadricula-panel {
       grid-template-columns: 1fr;
@@ -437,11 +453,51 @@
       gap: 1rem;
     }
   }
+
+  /* Breakpoint 3: menú desplegable cuando el ancho ya no alcanza */
+  @media (max-width: 620px) {
+    .encabezado-superior {
+      height: 56px;
+      padding: 0 1rem;
+    }
+    .boton-menu-lateral {
+      display: block;
+    }
+    .logo-principal {
+      max-height: 34px;
+    }
+    .barra-lateral {
+      position: fixed;
+      top: 56px;
+      bottom: 0;
+      left: 0;
+      width: min(240px, 82vw);
+      padding: 1rem;
+      z-index: 1001;
+      overflow-y: auto;
+      box-shadow: 4px 0 14px rgba(0, 0, 0, 0.18);
+      transform: translateX(-105%);
+      transition: transform 0.25s ease;
+    }
+    .barra-lateral.abierta {
+      transform: translateX(0);
+    }
+    .area-contenido {
+      width: 100%;
+      padding: 1rem;
+    }
+    .encabezado-panel {
+      margin-bottom: 1rem;
+    }
+    .tarjeta-clima-box {
+      width: 100%;
+    }
+  }
   
-  /* Breakpoint 3: Móviles (máx 480px) */
+  /* Breakpoint 4: Móviles pequeños (hasta 300px) */
   @media (max-width: 480px) {
     .area-contenido {
-      padding: 1rem;
+      padding: 0.75rem;
     }
     .tarjeta-panel {
       padding: 0.85rem;
@@ -451,5 +507,43 @@
     }
     .tarjeta-registro-inline .boton-principal {
       width: 100%;
+    }
+    .tabla-datos {
+      min-width: 430px;
+    }
+  }
+
+  @media (max-width: 340px) {
+    .encabezado-superior {
+      padding: 0 0.65rem;
+    }
+    .logo-principal {
+      max-width: 155px;
+      object-fit: contain;
+    }
+    .perfil-usuario {
+      gap: 0.35rem;
+    }
+    .rol-usuario {
+      font-size: 0.78rem;
+    }
+    .avatar-usuario {
+      width: 30px;
+      height: 30px;
+    }
+    .area-contenido {
+      padding: 0.65rem;
+    }
+    .encabezado-panel h2,
+    .seccion-vista > h2 {
+      font-size: 1.25rem;
+    }
+    .tarjeta-clima-box {
+      padding: 0.65rem;
+      gap: 0.6rem;
+    }
+    .meta-clima {
+      flex-wrap: wrap;
+      gap: 0.35rem;
     }
   }
