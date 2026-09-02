@@ -74,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.inicializarAutocompletarCiudades) inicializarAutocompletarCiudades();
 
   // "Inicializar" significa registrar los escuchadores de eventos una sola vez.
+  inicializarNavegacionSPA();
   inicializarMenuLateral();
   inicializarFormularioRutas();
   inicializarAsignacionEstudiantes();
@@ -84,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
   inicializarEdicionRutas();
 
   // "Renderizar" significa crear o actualizar el HTML visible a partir de estadoApp.
+  renderizarRutasDashboard();
   renderizarVistaRutas();
   renderizarTablasSecundarias();
   actualizarSelectoresRuta();
@@ -96,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function inicializarNavegacionSPA() {
   const botonesNav = document.querySelectorAll('.boton-nav');
   const secciones = document.querySelectorAll('.seccion-vista');
+  const logoInicio = document.getElementById('logo-inicio');
 
   botonesNav.forEach(boton => {
     boton.addEventListener('click', () => {
@@ -121,6 +124,13 @@ function inicializarNavegacionSPA() {
       // En móvil el menú se cierra al terminar de elegir una vista.
       cerrarMenuLateral();
     });
+  });
+
+  /* El logo funciona como acceso directo al panel principal. Reutiliza el
+   * evento del botón Dashboard para conservar exactamente la misma lógica. */
+  logoInicio?.addEventListener('click', (evento) => {
+    evento.preventDefault();
+    document.querySelector('.boton-nav[data-vista="vista-panel"]')?.click();
   });
 }
 
