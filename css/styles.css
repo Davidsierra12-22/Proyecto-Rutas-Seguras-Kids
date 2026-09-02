@@ -322,6 +322,64 @@
     font-size: 0.85rem;
     cursor: pointer;
   }
+
+  /* Badges de estado en tablas */
+  .badge-sin-asignar {
+    background-color: #f1f5f9;
+    color: #64748b;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .badge-asignado {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* Tarjeta elegante para inputs de registro */
+  .tarjeta-registro-inline {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  }
+
+  .tarjeta-registro-inline > label {
+    font-weight: 600;
+    color: #114b5f;
+  }
+
+  .tarjeta-registro-inline .grupo-input {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .tarjeta-registro-inline input[type="text"] {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .tarjeta-registro-inline input[type="text"]:focus {
+    border-color: #167086;
+  }
+
+  .tarjeta-registro-inline .boton-principal {
+    width: auto;
+    white-space: nowrap;
+  }
   
   .tabla-datos {
     width: 100%;
@@ -387,5 +445,11 @@
     }
     .tarjeta-panel {
       padding: 0.85rem;
+    }
+    .tarjeta-registro-inline .grupo-input {
+      flex-direction: column;
+    }
+    .tarjeta-registro-inline .boton-principal {
+      width: 100%;
     }
   }

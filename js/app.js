@@ -1,4 +1,3 @@
-// Estado inicial por defecto en caso de que localStorage esté vacío
 const estadoInicial = {
   rutas: [],
   estudiantes: [
@@ -14,38 +13,27 @@ const estadoInicial = {
   ]
 };
 
-// Cargar datos guardados o inicializar
 function cargarEstado() {
   const datosGuardados = localStorage.getItem('rutas_seguras_kids_db');
   if (datosGuardados) {
-    try {
-      return JSON.parse(datosGuardados);
-    } catch (error) {
-      console.error("Error al leer localStorage:", error);
-    }
+    try { return JSON.parse(datosGuardados); } catch (e) { console.error(e); }
   }
   return estadoInicial;
 }
 
-// Guardar el estado actual en el navegador
 function guardarEstado() {
   localStorage.setItem('rutas_seguras_kids_db', JSON.stringify(estadoApp));
 }
 
 let estadoApp = cargarEstado();
 
-// Notificaciones personalizadas estilo Toast
 function mostrarNotificacion(mensaje, tipo = 'error') {
   const toastExistente = document.querySelector('.toast-notificacion');
   if (toastExistente) toastExistente.remove();
 
   const toast = document.createElement('div');
   toast.className = `toast-notificacion ${tipo}`;
-  toast.innerHTML = `
-    <span>${tipo === 'error' ? '⚠️' : '✅'}</span>
-    <span>${mensaje}</span>
-  `;
-
+  toast.innerHTML = `<span>${tipo === 'error' ? '⚠️' : '✅'}</span><span>${mensaje}</span>`;
   document.body.appendChild(toast);
 
   setTimeout(() => {
@@ -56,8 +44,7 @@ function mostrarNotificacion(mensaje, tipo = 'error') {
 }
 
 function esNombreValido(texto) {
-  const patron = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-  return patron.test(texto);
+  return /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(texto);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -73,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
   inicializarEscuchadoresEliminacion();
   inicializarEdicionRutas();
 
-  // Renderizado inicial dinámico de todo el Dashboard
   renderizarRutasDashboard();
   renderizarVistaRutas();
   renderizarTablasSecundarias();
@@ -82,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
   renderizarListaEstudiantesDisponibles();
 });
 
-/* 1. Navegación SPA */
 function inicializarNavegacionSPA() {
   const botonesNav = document.querySelectorAll('.boton-nav');
   const secciones = document.querySelectorAll('.seccion-vista');
@@ -90,7 +75,6 @@ function inicializarNavegacionSPA() {
   botonesNav.forEach(boton => {
     boton.addEventListener('click', () => {
       const vistaObjetivo = boton.dataset.vista;
-
       botonesNav.forEach(b => {
         b.classList.remove('activo');
         const etiqueta = b.querySelector('.etiqueta-activo');
@@ -101,23 +85,15 @@ function inicializarNavegacionSPA() {
       boton.insertAdjacentHTML('beforeend', '<span class="etiqueta-activo">Activa</span>');
 
       secciones.forEach(seccion => {
-        if (seccion.id === vistaObjetivo) {
-          seccion.classList.remove('oculta');
-          seccion.classList.add('activa');
-        } else {
-          seccion.classList.remove('activa');
-          seccion.classList.add('oculta');
-        }
+        seccion.classList.toggle('activa', seccion.id === vistaObjetivo);
+        seccion.classList.toggle('oculta', seccion.id !== vistaObjetivo);
       });
 
-      if (vistaObjetivo === 'vista-rutas' || vistaObjetivo === 'rutas') {
-        renderizarVistaRutas();
-      }
+      if (vistaObjetivo === 'vista-rutas' || vistaObjetivo === 'rutas') renderizarVistaRutas();
     });
   });
 }
 
-/* 2. Captura de Formulario y Creación de Rutas */
 function inicializarFormularioRutas() {
   const formularioRuta = document.getElementById('formulario-ruta');
   if (!formularioRuta) return;
@@ -150,63 +126,65 @@ function inicializarFormularioRutas() {
     guardarEstado();
 
     formularioRuta.reset();
-    mostrarNotificacion('Ruta añadida con éxito', 'exito');
+    mostrarNotificacion('Ruta creada con éxito', 'exito');
 
     renderizarRutasDashboard();
     renderizarVistaRutas();
     actualizarSelectoresRuta();
+    actualizarSelectoresConductor();
+    renderizarTablasSecundarias();
   });
 }
 
-/* 3. Buscador de Estudiantes en Tiempo Real */
 function inicializarBuscadorEstudiantes() {
   const buscadorInput = document.querySelector('input[placeholder*="Buscar estudiante"]');
   if (!buscadorInput) return;
 
   buscadorInput.addEventListener('input', (e) => {
-    const filtro = e.target.value.toLowerCase().trim();
-    renderizarListaEstudiantesDisponibles(filtro);
+    renderizarListaEstudiantesDisponibles(e.target.value.toLowerCase().trim());
   });
 }
 
-/* 4. Renderizado Dinámico de Estudiantes Disponibles en Checkboxes */
+/* Bloquea estudiantes ya asignados */
 function renderizarListaEstudiantesDisponibles(filtro = '') {
   const contenedor = document.getElementById('lista-estudiantes-disponibles');
   if (!contenedor) return;
 
   contenedor.innerHTML = '';
-
-  const estudiantesFiltrados = estadoApp.estudiantes.filter(est => 
-    est.nombre.toLowerCase().includes(filtro)
-  );
+  const estudiantesFiltrados = estadoApp.estudiantes.filter(est => est.nombre.toLowerCase().includes(filtro));
 
   if (estudiantesFiltrados.length === 0) {
-    contenedor.innerHTML = '<p style="color:#64748b; font-size:13px; padding:5px;">No se encontraron estudiantes.</p>';
+    contenedor.innerHTML = '<p style="color:#64748b; font-size:13px; padding:5px;">No hay estudiantes disponibles.</p>';
     return;
   }
 
   estudiantesFiltrados.forEach(est => {
+    const rutaAsignada = estadoApp.rutas.find(r => r.estudiantes.includes(est.nombre));
     const label = document.createElement('label');
     label.style.display = 'block';
-    label.style.margin = '4px 0';
+    label.style.margin = '6px 0';
 
-    label.innerHTML = `
-      <input type="checkbox" value="${est.nombre}"> ${est.nombre}
-    `;
+    if (rutaAsignada) {
+      label.innerHTML = `<input type="checkbox" value="${est.nombre}" disabled> <span style="color:#94a3b8;">${est.nombre} (${rutaAsignada.nombre})</span>`;
+    } else {
+      label.innerHTML = `<input type="checkbox" value="${est.nombre}"> ${est.nombre}`;
+    }
     contenedor.appendChild(label);
   });
 }
 
-/* 5. Actualización de Desplegables de Conductores y Rutas */
+/* Bloquea conductores ya asignados */
 function actualizarSelectoresConductor() {
   const selectConductor = document.getElementById('selectConductor');
   if (!selectConductor) return;
 
   selectConductor.innerHTML = '<option value="">Seleccione Conductor</option>';
   estadoApp.conductores.forEach(c => {
+    const rutaAsignada = estadoApp.rutas.find(r => r.conductor === c.nombre);
     const opt = document.createElement('option');
     opt.value = c.nombre;
-    opt.textContent = c.nombre;
+    opt.textContent = rutaAsignada ? `${c.nombre} (${rutaAsignada.nombre})` : c.nombre;
+    if (rutaAsignada) opt.disabled = true;
     selectConductor.appendChild(opt);
   });
 }
@@ -224,7 +202,6 @@ function actualizarSelectoresRuta() {
   });
 }
 
-/* 6. Asignación de Estudiantes */
 function inicializarAsignacionEstudiantes() {
   const btnConfirmar = document.getElementById('boton-confirmar-asignacion');
   const selectRuta = document.getElementById('selectRutaAsignar');
@@ -236,29 +213,27 @@ function inicializarAsignacionEstudiantes() {
     const rutaId = selectRuta.value;
     if (!rutaId) return mostrarNotificacion('Seleccione una ruta.', 'error');
 
-    const checkboxes = contenedorChecks.querySelectorAll('input[type="checkbox"]:checked');
+    const checkboxes = contenedorChecks.querySelectorAll('input[type="checkbox"]:checked:not(:disabled)');
     const seleccionados = Array.from(checkboxes).map(cb => cb.value);
 
-    if (seleccionados.length === 0) return mostrarNotificacion('Seleccione al menos un estudiante.', 'error');
+    if (seleccionados.length === 0) return mostrarNotificacion('Seleccione al menos un estudiante disponible.', 'error');
 
     const ruta = estadoApp.rutas.find(r => r.id === rutaId);
     if (ruta) {
       seleccionados.forEach(estNombre => {
-        if (!ruta.estudiantes.includes(estNombre)) {
-          ruta.estudiantes.push(estNombre);
-        }
+        if (!ruta.estudiantes.includes(estNombre)) ruta.estudiantes.push(estNombre);
       });
 
       guardarEstado();
       mostrarNotificacion('Estudiantes asignados correctamente', 'exito');
       renderizarRutasDashboard();
       renderizarVistaRutas();
-      checkboxes.forEach(cb => cb.checked = false);
+      renderizarTablasSecundarias();
+      renderizarListaEstudiantesDisponibles();
     }
   });
 }
 
-/* 7. Formularios de Estudiantes y Conductores */
 function inicializarFormularioEstudiantes() {
   const form = document.getElementById('formulario-estudiante');
   if (!form) return;
@@ -269,14 +244,10 @@ function inicializarFormularioEstudiantes() {
     const nombre = input.value.trim();
 
     if (!nombre) return;
-    if (!esNombreValido(nombre)) {
-      mostrarNotificacion('El nombre solo debe contener letras y espacios.', 'error');
-      return;
-    }
+    if (!esNombreValido(nombre)) return mostrarNotificacion('Solo letras y espacios.', 'error');
 
     estadoApp.estudiantes.push({ id: Date.now(), nombre });
     guardarEstado();
-
     input.value = '';
     mostrarNotificacion('Estudiante añadido', 'exito');
     renderizarTablasSecundarias();
@@ -294,14 +265,10 @@ function inicializarFormularioConductores() {
     const nombre = input.value.trim();
 
     if (!nombre) return;
-    if (!esNombreValido(nombre)) {
-      mostrarNotificacion('El nombre del conductor solo debe contener letras.', 'error');
-      return;
-    }
+    if (!esNombreValido(nombre)) return mostrarNotificacion('Solo letras y espacios.', 'error');
 
     estadoApp.conductores.push({ id: Date.now(), nombre });
     guardarEstado();
-
     input.value = '';
     mostrarNotificacion('Conductor añadido', 'exito');
     renderizarTablasSecundarias();
@@ -309,11 +276,9 @@ function inicializarFormularioConductores() {
   });
 }
 
-/* 8. Renderizado de Tablas y Tarjetas */
 function renderizarRutasDashboard() {
   const contenedor = document.getElementById('contenedor-rutas');
   if (!contenedor) return;
-
   contenedor.innerHTML = '';
   estadoApp.rutas.forEach(ruta => {
     const tarjeta = document.createElement('route-card');
@@ -327,9 +292,8 @@ function renderizarVistaRutas() {
   if (!contenedorGestion) return;
 
   contenedorGestion.innerHTML = '';
-
   if (estadoApp.rutas.length === 0) {
-    contenedorGestion.innerHTML = '<p style="color: #64748b; padding: 20px;">No hay rutas registradas actualmente.</p>';
+    contenedorGestion.innerHTML = '<p style="color: #64748b; padding: 20px;">No hay rutas registradas.</p>';
     return;
   }
 
@@ -344,28 +308,43 @@ function renderizarVistaRutas() {
   });
 }
 
+/* Muestra estado real en las tablas secundarias */
 function renderizarTablasSecundarias() {
   const tbodyEst = document.getElementById('cuerpo-tabla-estudiantes');
   const tbodyCond = document.getElementById('cuerpo-tabla-conductores');
 
   if (tbodyEst) {
-    tbodyEst.innerHTML = estadoApp.estudiantes.map(e => `
-      <tr>
-        <td>${e.nombre}</td>
-        <td>Sin asignar</td>
-        <td><button onclick="eliminarEstudiante(${e.id})" class="boton-icono">🗑️</button></td>
-      </tr>
-    `).join('');
+    tbodyEst.innerHTML = estadoApp.estudiantes.map(e => {
+      const ruta = estadoApp.rutas.find(r => r.estudiantes.includes(e.nombre));
+      const estadoHtml = ruta 
+        ? `<span class="badge-asignado">${ruta.nombre}</span>` 
+        : `<span class="badge-sin-asignar">Sin asignar</span>`;
+
+      return `
+        <tr>
+          <td>${e.nombre}</td>
+          <td>${estadoHtml}</td>
+          <td><button onclick="eliminarEstudiante(${e.id})" class="boton-icono">🗑️</button></td>
+        </tr>
+      `;
+    }).join('');
   }
 
   if (tbodyCond) {
-    tbodyCond.innerHTML = estadoApp.conductores.map(c => `
-      <tr>
-        <td>${c.nombre}</td>
-        <td>Sin asignar</td>
-        <td><button onclick="eliminarConductor(${c.id})" class="boton-icono">🗑️</button></td>
-      </tr>
-    `).join('');
+    tbodyCond.innerHTML = estadoApp.conductores.map(c => {
+      const ruta = estadoApp.rutas.find(r => r.conductor === c.nombre);
+      const estadoHtml = ruta 
+        ? `<span class="badge-asignado">${ruta.nombre}</span>` 
+        : `<span class="badge-sin-asignar">Sin asignar</span>`;
+
+      return `
+        <tr>
+          <td>${c.nombre}</td>
+          <td>${estadoHtml}</td>
+          <td><button onclick="eliminarConductor(${c.id})" class="boton-icono">🗑️</button></td>
+        </tr>
+      `;
+    }).join('');
   }
 }
 
@@ -378,6 +357,9 @@ function inicializarEscuchadoresEliminacion() {
     renderizarRutasDashboard();
     renderizarVistaRutas();
     actualizarSelectoresRuta();
+    actualizarSelectoresConductor();
+    renderizarTablasSecundarias();
+    renderizarListaEstudiantesDisponibles();
     mostrarNotificacion('Ruta eliminada', 'exito');
   });
 }
@@ -399,15 +381,26 @@ function inicializarEdicionRutas() {
     renderizarRutasDashboard();
     renderizarVistaRutas();
     actualizarSelectoresRuta();
-    mostrarNotificacion('Edita la ruta y reenvía el formulario', 'exito');
+    actualizarSelectoresConductor();
+    renderizarTablasSecundarias();
+    renderizarListaEstudiantesDisponibles();
+    mostrarNotificacion('Modifica los datos y reenvía el formulario', 'exito');
   });
 }
 
 window.eliminarEstudiante = (id) => {
+  const est = estadoApp.estudiantes.find(e => e.id === id);
+  if (est) {
+    estadoApp.rutas.forEach(r => {
+      r.estudiantes = r.estudiantes.filter(nombre => nombre !== est.nombre);
+    });
+  }
   estadoApp.estudiantes = estadoApp.estudiantes.filter(e => e.id !== id);
   guardarEstado();
   renderizarTablasSecundarias();
   renderizarListaEstudiantesDisponibles();
+  renderizarRutasDashboard();
+  renderizarVistaRutas();
   mostrarNotificacion('Estudiante eliminado', 'exito');
 };
 

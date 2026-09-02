@@ -185,10 +185,13 @@
         <section id="vista-estudiantes" class="seccion-vista oculta">
           <h2>Registro de Estudiantes</h2>
           <div class="caja-contenido-vista">
-            <form id="formulario-estudiante" class="formulario-linea">
-              <input type="text" id="nombreEstudianteInput" placeholder="Nombre completo del estudiante" required>
-              <button type="submit" class="boton-principal">Registrar Estudiante</button>
-            </form>
+            <div class="tarjeta-registro-inline">
+              <label for="nombreEstudianteInput">Añadir Nuevo Estudiante</label>
+              <form id="formulario-estudiante" class="grupo-input">
+                <input type="text" id="nombreEstudianteInput" placeholder="Ej: Diego Martínez" required>
+                <button type="submit" class="boton-principal">+ Guardar</button>
+              </form>
+            </div>
             <div class="contenedor-tabla">
               <table class="tabla-datos">
                 <thead>
@@ -208,10 +211,13 @@
         <section id="vista-conductores" class="seccion-vista oculta">
           <h2>Registro de Conductores</h2>
           <div class="caja-contenido-vista">
-            <form id="formulario-conductor" class="formulario-linea">
-              <input type="text" id="nombreConductorInput" placeholder="Nombre completo del conductor" required>
-              <button type="submit" class="boton-principal">Registrar Conductor</button>
-            </form>
+            <div class="tarjeta-registro-inline">
+              <label for="nombreConductorInput">Añadir Nuevo Conductor</label>
+              <form id="formulario-conductor" class="grupo-input">
+                <input type="text" id="nombreConductorInput" placeholder="Ej: Ana Rodríguez" required>
+                <button type="submit" class="boton-principal">+ Guardar</button>
+              </form>
+            </div>
             <div class="contenedor-tabla">
               <table class="tabla-datos">
                 <thead>
